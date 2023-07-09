@@ -16,7 +16,13 @@ export default function App() {
     React.useEffect(() => {
         localStorage.setItem("notes", JSON.stringify(notes))
     }, [notes])
-    
+
+    function deleteNote(event, noteId)
+    {
+        event.stopPropagation();
+        setNotes(oldNotes=>oldNotes.filter(note=>note.id!==noteId))
+    }
+
     function createNewNote() {
         const newNote = {
             id: nanoid(),
@@ -25,13 +31,26 @@ export default function App() {
         setNotes(prevNotes => [newNote, ...prevNotes])
         setCurrentNoteId(newNote.id)
     }
-    
+    // updates in such a way that updated note comes on top due to unshift
     function updateNote(text) {
-        setNotes(oldNotes => oldNotes.map(oldNote => {
-            return oldNote.id === currentNoteId
-                ? { ...oldNote, body: text }
-                : oldNote
-        }))
+        
+        setNotes(oldNotes => {
+            const NewArray = []
+            for (let i = 0; i < oldNotes.length; i++)
+            {
+                if (oldNotes[i].id === currentNoteId)
+                {
+                    NewArray.unshift({...oldNotes[i], body: text})
+                }
+                else
+                {
+                    NewArray.push(oldNotes[i])
+                }
+            }
+            return NewArray
+            }
+                )
+        
     }
     
     function findCurrentNote() {
@@ -54,7 +73,8 @@ export default function App() {
                     notes={notes}
                     currentNote={findCurrentNote()}
                     setCurrentNoteId={setCurrentNoteId}
-                    newNote={createNewNote}
+                            newNote={createNewNote}
+                            deleteNote={deleteNote}
                 />
                 {
                     currentNoteId && 
