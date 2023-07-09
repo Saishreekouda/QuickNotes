@@ -15,7 +15,7 @@ export default function Sidebar(props) {
                 <h4 className="text-snippet">{note.body.split("\n")[0]}</h4>
                 <button 
                     className="delete-btn"
-                    onClick={(event) => props.deleteNote(event, note.id)}
+                    onClick={() => props.deleteNote(note.id)}
                 >
                     <FontAwesomeIcon icon={faTrashCan} style={{
                         fontSize: "20px",
